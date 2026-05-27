@@ -1146,7 +1146,7 @@ const savedDark = lsGet('coep_dark', null);
 if (savedDark !== null) {
     applyDarkMode(savedDark);
 } else {
-    applyDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    applyDarkMode(false);
 }
 
 updateBookmarkBadge();
