@@ -274,16 +274,17 @@ body.dark .toast { background: #f1f5f9; color: #0f172a; }
     }
 
     .nav-actions .btn, .nav-actions .icon-btn {
-        width: 40%;
+        width: 100%;
         justify-content: center;
         height: 40px;
         margin: 0;
     }
     
     .g_id_signin, #userProfile {
-        width: 40%;
+        display: flex;
+        width: 100%;
         justify-content: center;
-        margin: 0; 
+        margin: 0;
     }
 
     .hero { padding: 2rem 1rem; margin-bottom: 1.5rem; }
