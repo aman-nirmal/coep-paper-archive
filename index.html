@@ -81,8 +81,9 @@
         </button>
 
         <div class="filter-group" id="filterGroup">
-            <select class="filter-select" id="filterYear" onchange="window.updateFilters()">
-                <option value="FY" selected>First Year (FY)</option>
+           <select class="filter-select" id="filterYear" onchange="window.updateFilters()">
+                <option value="all" selected>All Years</option>
+                <option value="FY">First Year (FY)</option>
                 <option value="SY">Second Year (SY)</option>
                 <option value="TY">Third Year (TY)</option>
                 <option value="BTech">Final Year (BTech)</option>
@@ -90,6 +91,7 @@
 
             <div id="filterBranchContainer">
                 <select class="filter-select" id="filterBranch" onchange="window.updateSubjectDropdown()">
+                    <option value="all" selected>All Branches</option>
                     <option value="Civil">Civil</option>
                     <option value="Comp">Computer</option>
                     <option value="Elec">Electrical</option>
