@@ -220,6 +220,23 @@ body.dark .toast { background: #f1f5f9; color: #0f172a; }
 .mobile-only { display: none; }
 .desktop-only { display: inline; }
 
+select.filter-select, select.form-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    
+    background-position: right 20px center; 
+    
+    padding-right: 45px; 
+}
+
+body.dark select.filter-select, body.dark select.form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
 @media (max-width: 768px) {
     .mobile-only { display: inline-flex; }
     .desktop-only { display: none; }
