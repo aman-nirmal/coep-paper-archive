@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COEP Paper Archive</title>
+    <title>COEP Examination Archive</title>
     <meta name="description" content="A centralized, community-driven repository of COEP MSE and ESE examination papers, class notes, and syllabi.">
-
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="COEP Archive">
-
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -40,7 +37,7 @@
                 </button>
 
                 <div id="g_id_onload" data-client_id="980701990716-s643cbvl6gtctgdtgqajgkhct9siko1s.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
-                <div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
 
                 <div id="userProfile" style="display:none; align-items:center; gap:8px;">
                     <img id="userAvatar" src="" alt="User" style="width:32px; height:32px; border-radius:50%; border:2px solid var(--border-color);">
@@ -53,7 +50,7 @@
 
     <div class="hero">
         <h1>Exam Paper Archive</h1>
-        <p>A community-driven collection of MSE & ESE papers.</p>
+        <p>A centralized repository of MSE and ESE examination documents.</p>
         <div class="hero-stats">
             <div class="stat-pill"><span id="statPapers">—</span> Documents</div>
             <div class="stat-pill"><span id="statSubjects">—</span> Subjects</div>
@@ -110,23 +107,23 @@
                 <option value="all">All Semesters</option>
             </select>
 
-            <select class="filter-select" id="filterExam" onchange="window.renderPapers()">
+            <select class="filter-select" id="filterExam" onchange="window.triggerFilter()">
                 <option value="all">All Examinations</option>
                 <option value="MSE">Mid Semester (MSE)</option>
                 <option value="ESE">End Semester (ESE)</option>
             </select>
 
-            <select class="filter-select" id="filterSubject" onchange="window.renderPapers()">
+            <select class="filter-select" id="filterSubject" onchange="window.triggerFilter()">
                 <option value="all">All Subjects</option>
             </select>
 
-            <select class="filter-select" id="filterSort" onchange="window.renderPapers()">
+            <select class="filter-select" id="filterSort" onchange="window.triggerFilter()">
                 <option value="newest">Chronological (Newest)</option>
                 <option value="oldest">Chronological (Oldest)</option>
                 <option value="az">Alphabetical (A-Z)</option>
             </select>
 
-            <input type="text" id="searchInput" class="search-box" placeholder="Search by subject name..." onkeyup="window.renderPapers()">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search by subject name..." onkeyup="window.triggerFilter()">
         </div>
     </div>
 
@@ -146,7 +143,7 @@
 
     <footer>
         <div class="footer-thanks">Maintained by the Student Community</div>
-        <div class="footer-credit">Developed by Aman | FY EE</div>
+        <div class="footer-credit">Developed by Aman | Electrical Engineering</div>
     </footer>
 
     <div class="modal-overlay" id="pdfPreviewModal">
