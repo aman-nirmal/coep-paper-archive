@@ -892,7 +892,7 @@ function renderNotes() {
         <div class="note-card">
             <div class="note-card-type note-type-${escAttr(n.docType)}">${typeLabel}</div>
             <div class="note-card-title">${titleText}</div>
-            <div class="note-card-meta">Date: ${escAttr(n.year)}${semText} &nbsp;|&nbsp; Source: ${escAttr(n.creatorName)}${authorText}</div>
+            <div class="note-card-meta">Date: ${new Date(n.date).toLocaleDateString('en-IN')} &nbsp;|&nbsp; Source: ${escAttr(n.creatorName)}${authorText}</div>
             <div style="display:flex; gap:8px; margin-top:auto;">
                 <button onclick="window.openPdfPreview('${escAttr(n.subject.replace(/'/g, "\\'"))}', '${escAttr(n.link)}')" class="btn btn-outline" style="flex:1; font-size:0.88rem; padding:8px;">Preview</button>
                 <a href="${escAttr(n.link)}" target="_blank" class="btn btn-primary" style="flex:1; text-decoration:none; font-size:0.88rem; padding:8px; text-align:center;">Access</a>
