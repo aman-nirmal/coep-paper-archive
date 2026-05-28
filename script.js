@@ -6,29 +6,6 @@ const ADMIN_EMAILS = ['coep.paper.archive@gmail.com'];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
 
-const SUBJECT_DICTIONARY = {
-    "ec": "Engineering Chemistry",
-    "ec-1": "Engineering Chemistry",
-    "engineering chemistry (ec)": "Engineering Chemistry",
-    "eng chem": "Engineering Chemistry",
-    "am": "Applied Mechanics",
-    "applied mechanic": "Applied Mechanics",
-    "applied mechanic (am)": "Applied Mechanics",
-    "ep": "Engineering Physics",
-    "physics": "Engineering Physics",
-    "m1": "Engineering Mathematics 1",
-    "m-1": "Engineering Mathematics 1",
-    "m2": "Engineering Mathematics 2",
-    "m-2": "Engineering Mathematics 2"
-};
-
-function standardizeSubject(rawSubject) {
-    if (!rawSubject) return "Unknown Subject";
-    const cleanName = rawSubject.trim();
-    const lowerName = cleanName.toLowerCase();
-    return SUBJECT_DICTIONARY[lowerName] || cleanName;
-}
-
 window.handleCredentialResponse = async (response) => {
     const base64Url = response.credential.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -100,7 +77,7 @@ async function fetchLivePapers() {
 
         const communityPapers = liveData.map(item => ({
             id: generateStableId(item),
-            subject: standardizeSubject(item.Subject),
+            subject: item.Subject,
             year: item.Year,
             sem: item.Semester,
             examType: item.ExamType,
@@ -993,19 +970,6 @@ function buildCard(p) {
             window.toggleBookmark(p.id);
         });
 
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'card-icon-btn';
-        copyBtn.title = 'Copy link';
-        copyBtn.textContent = '🔗';
-        copyBtn.style.cssText = 'font-size: 0.9rem; padding: 4px 8px;';
-        copyBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navigator.clipboard.writeText(p.link).then(() => {
-                copyBtn.textContent = '✓';
-                setTimeout(() => { copyBtn.textContent = '🔗'; }, 2000);
-            }).catch(() => showToast('Could not copy link.'));
-        });
-
         const reportBtn = document.createElement('button');
         reportBtn.className = 'card-icon-btn';
         reportBtn.title = 'Report discrepancy';
@@ -1017,7 +981,6 @@ function buildCard(p) {
         });
 
         iconActions.appendChild(bmBtn);
-        iconActions.appendChild(copyBtn);
         iconActions.appendChild(reportBtn);
 
         footer.appendChild(previewBtn);
@@ -1179,7 +1142,7 @@ window.updateFilters = () => {
 
     semSelect.innerHTML = '<option value="all">All Semesters</option>';
 
-    const sems = year === 'FY' ? ['Sem1', 'Sem2'] : year === 'SY' ? ['Sem3', 'Sem4'] : year === 'TY' ? ['Sem5', 'Sem6'] : ['Sem7', 'Sem8'];
+    const sems = year === 'FY' ? ['sem 1', 'sem 2'] : year === 'SY' ? ['sem 3', 'sem 4'] : year === 'TY' ? ['sem 5', 'sem 6'] : ['sem 7', 'sem 8'];
     sems.forEach(s => semSelect.add(new Option(s.replace('Sem', 'Semester '), s)));
 
     window.updateSubjectDropdown();
