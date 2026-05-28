@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COEP Examination Archive</title>
+    <title>COEP Paper Archive</title>
     <meta name="description" content="A centralized, community-driven repository of COEP MSE and ESE examination papers, class notes, and syllabi.">
 
     <link rel="manifest" href="manifest.json">
@@ -23,24 +23,23 @@
         <div class="nav-container">
             <div class="logo">
                 <div class="logo-box">
-                    <span class="desktop-only">COEP PAPER ARCHIVE</span>
-                    <span class="mobile-only">ARCHIVE</span>
+                    <span>COEP PAPER ARCHIVE</span>
                 </div>
             </div>
-            <div class="nav-actions">
-                <button class="icon-btn" id="darkModeToggle" title="Toggle Display Mode" onclick="window.toggleDarkMode()" style="font-size: 0.85rem; font-weight: 600;">Dark</button>
-                <button class="icon-btn" id="bookmarksBtn" title="Saved Documents" onclick="window.showBookmarks()" style="font-size: 0.85rem; font-weight: 600;">Saved <span id="bookmarkCount" class="badge" style="display:none">0</span></button>
+            
+            <button class="mobile-menu-btn mobile-only" onclick="window.toggleMobileMenu()">
+                ☰
+            </button>
+
+            <div class="nav-actions" id="navActions">
+                <button class="icon-btn" id="darkModeToggle" title="Toggle Display Mode" onclick="window.toggleDarkMode()" style="font-size: 0.85rem; font-weight: 600;">Dark Mode</button>
 
                 <button class="btn btn-primary" onclick="window.openUploadModal()">
                     <span class="desktop-only">Submit</span>
-                    <span class="mobile-only">+</span>
+                    <span class="mobile-only">+ Submit Document</span>
                 </button>
 
-                <div id="g_id_onload"
-                     data-client_id="980701990716-s643cbvl6gtctgdtgqajgkhct9siko1s.apps.googleusercontent.com"
-                     data-callback="handleCredentialResponse"
-                     data-auto_prompt="false">
-                </div>
+                <div id="g_id_onload" data-client_id="980701990716-s643cbvl6gtctgdtgqajgkhct9siko1s.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
                 <div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
 
                 <div id="userProfile" style="display:none; align-items:center; gap:8px;">
@@ -53,8 +52,8 @@
     </header>
 
     <div class="hero">
-        <h1>Examination Paper Archive</h1>
-        <p>A centralized repository of MSE and ESE examination documents.</p>
+        <h1>Exam Paper Archive</h1>
+        <p>A community-driven collection of MSE & ESE papers.</p>
         <div class="hero-stats">
             <div class="stat-pill"><span id="statPapers">—</span> Documents</div>
             <div class="stat-pill"><span id="statSubjects">—</span> Subjects</div>
@@ -147,7 +146,7 @@
 
     <footer>
         <div class="footer-thanks">Maintained by the Student Community</div>
-        <div class="footer-credit">Developed by Aman | Electrical Engineering</div>
+        <div class="footer-credit">Developed by Aman | FY EE</div>
     </footer>
 
     <div class="modal-overlay" id="pdfPreviewModal">
