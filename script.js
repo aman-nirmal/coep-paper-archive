@@ -174,6 +174,11 @@ window.toggleDarkMode = () => {
     applyDarkMode(isDark);
 };
 
+window.toggleMobileMenu = () => {
+    const nav = document.getElementById('navActions');
+    nav.classList.toggle('show-menu');
+};
+
 function showToast(msg, duration = 3000) {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -442,6 +447,7 @@ window.toggleDocTypeFields = () => {
 };
 
 window.openUploadModal = () => {
+    document.getElementById('navActions').classList.remove('show-menu');
     const nameField = document.getElementById('anonymousNameField');
     if (nameField) {
         nameField.style.display = currentUser ? 'none' : 'block';
@@ -651,6 +657,7 @@ function sendToBackend(payload) {
 }
 
 window.openAdminPanel = () => {
+    document.getElementById('navActions').classList.remove('show-menu');
     if (!currentUser || !ADMIN_EMAILS.includes(currentUser.email)) {
         showToast("Unauthorized access.");
         return;
@@ -930,19 +937,6 @@ function buildCard(p) {
             window.toggleBookmark(p.id);
         });
 
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'card-icon-btn';
-        copyBtn.title = 'Copy link';
-        copyBtn.textContent = '🔗';
-        copyBtn.style.cssText = 'font-size: 0.9rem; padding: 4px 8px;';
-        copyBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navigator.clipboard.writeText(p.link).then(() => {
-                copyBtn.textContent = '✓';
-                setTimeout(() => { copyBtn.textContent = '🔗'; }, 2000);
-            }).catch(() => showToast('Could not copy link.'));
-        });
-
         const reportBtn = document.createElement('button');
         reportBtn.className = 'card-icon-btn';
         reportBtn.title = 'Report discrepancy';
@@ -954,7 +948,6 @@ function buildCard(p) {
         });
 
         iconActions.appendChild(bmBtn);
-        iconActions.appendChild(copyBtn);
         iconActions.appendChild(reportBtn);
 
         footer.appendChild(previewBtn);
