@@ -6,6 +6,29 @@ const ADMIN_EMAILS = ['coep.paper.archive@gmail.com'];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
 
+const SUBJECT_DICTIONARY = {
+    "ec": "Engineering Chemistry",
+    "ec-1": "Engineering Chemistry",
+    "engineering chemistry (ec)": "Engineering Chemistry",
+    "eng chem": "Engineering Chemistry",
+    "am": "Applied Mechanics",
+    "applied mechanic": "Applied Mechanics",
+    "applied mechanic (am)": "Applied Mechanics",
+    "ep": "Engineering Physics",
+    "physics": "Engineering Physics",
+    "m1": "Engineering Mathematics 1",
+    "m-1": "Engineering Mathematics 1",
+    "m2": "Engineering Mathematics 2",
+    "m-2": "Engineering Mathematics 2"
+};
+
+function standardizeSubject(rawSubject) {
+    if (!rawSubject) return "Unknown Subject";
+    const cleanName = rawSubject.trim();
+    const lowerName = cleanName.toLowerCase();
+    return SUBJECT_DICTIONARY[lowerName] || cleanName;
+}
+
 window.handleCredentialResponse = async (response) => {
     const base64Url = response.credential.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -77,7 +100,7 @@ async function fetchLivePapers() {
 
         const communityPapers = liveData.map(item => ({
             id: generateStableId(item),
-            subject: item.Subject,
+            subject: standardizeSubject(item.Subject),
             year: item.Year,
             sem: item.Semester,
             examType: item.ExamType,
@@ -90,7 +113,7 @@ async function fetchLivePapers() {
             docType: item.DocType || 'paper',
             noteTopic: item.NoteTopic || '',
             noteAuthor: item.NoteAuthor || ''
-        }));
+        })).reverse();
 
         allPapers = [...getApproved(), ...communityPapers];
 
@@ -102,7 +125,7 @@ async function fetchLivePapers() {
         window.switchTab(currentTab);
 
     } catch (error) {
-        console.error("Failed to retrieve live data:", error);
+        console.error(error);
         showFetchError();
     }
 }
@@ -799,6 +822,12 @@ window.adminDismissReport = (index) => {
     showToast('Report dismissed successfully.');
 };
 
+window.triggerFilter = (resetPage = true) => {
+    if (currentTab === 'papers') window.renderPapers(resetPage);
+    else if (currentTab === 'notes') renderNotes();
+    else if (currentTab === 'saved') renderSavedSection();
+};
+
 function renderLeaderboard() {
     const container = document.getElementById('leaderboardContainer');
     if (!container) return;
@@ -852,10 +881,29 @@ function renderNotes() {
     const container = document.getElementById('notesContainer');
     if (!container) return;
 
-    const notes = allPapers.filter(p => p.docType === 'notes' || p.docType === 'syllabus');
+    const year = document.getElementById('filterYear').value;
+    const sem = document.getElementById('filterSem').value;
+    const branch = year === 'FY' ? 'Common' : document.getElementById('filterBranch').value;
+    const searchInputEl = document.getElementById('searchInput');
+    const search = searchInputEl ? searchInputEl.value.toLowerCase() : '';
+
+    const notes = allPapers.filter(p => {
+        if (p.docType !== 'notes' && p.docType !== 'syllabus') return false;
+        if (p.year !== year) return false;
+        if (year === 'FY') {
+            if (sem !== 'all' && p.sem !== sem && p.sem !== '---') return false;
+        } else {
+            if (sem !== 'all' && p.sem !== sem && p.sem !== '---') return false;
+            if (p.branch !== branch && p.branch !== 'Common') return false;
+        }
+        if (search && !p.subject.toLowerCase().includes(search)) return false;
+        return true;
+    });
+
+    notes.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (!notes.length) {
-        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:4rem;">No supplemental documents are currently available.</p>';
+        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:4rem; grid-column:1/-1;">No supplemental documents found matching criteria.</p>';
         return;
     }
 
@@ -882,7 +930,15 @@ function renderSavedSection() {
     const container = document.getElementById('savedContainer');
     if (!container) return;
     const bm = getBookmarks();
-    const saved = allPapers.filter(p => bm.includes(p.id));
+    
+    const searchInputEl = document.getElementById('searchInput');
+    const search = searchInputEl ? searchInputEl.value.toLowerCase() : '';
+
+    let saved = allPapers.filter(p => bm.includes(p.id));
+
+    if (search) {
+        saved = saved.filter(p => p.subject.toLowerCase().includes(search));
+    }
 
     if (!saved.length) {
         container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:4rem; color:var(--text-muted);"><p style="font-size:1.1rem; font-weight:600;">No saved documents.</p><p>Select the star icon on any document card to save it to this section.</p></div>';
@@ -937,6 +993,19 @@ function buildCard(p) {
             window.toggleBookmark(p.id);
         });
 
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'card-icon-btn';
+        copyBtn.title = 'Copy link';
+        copyBtn.textContent = '🔗';
+        copyBtn.style.cssText = 'font-size: 0.9rem; padding: 4px 8px;';
+        copyBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(p.link).then(() => {
+                copyBtn.textContent = '✓';
+                setTimeout(() => { copyBtn.textContent = '🔗'; }, 2000);
+            }).catch(() => showToast('Could not copy link.'));
+        });
+
         const reportBtn = document.createElement('button');
         reportBtn.className = 'card-icon-btn';
         reportBtn.title = 'Report discrepancy';
@@ -948,6 +1017,7 @@ function buildCard(p) {
         });
 
         iconActions.appendChild(bmBtn);
+        iconActions.appendChild(copyBtn);
         iconActions.appendChild(reportBtn);
 
         footer.appendChild(previewBtn);
@@ -985,29 +1055,28 @@ window.switchTab = (tab) => {
     });
 
     document.getElementById('itemsContainer').style.display = tab === 'papers' ? 'grid' : 'none';
-    document.getElementById('filterGroup').closest('.filter-bar').style.display = tab === 'papers' ? '' : 'block';
     document.getElementById('notesSection').style.display = tab === 'notes' ? 'block' : 'none';
     document.getElementById('leaderboardSection').style.display = tab === 'leaderboard' ? 'block' : 'none';
     document.getElementById('savedSection').style.display = tab === 'saved' ? 'block' : 'none';
 
     const loadBtn = document.getElementById('loadMoreBtn');
-    if (loadBtn) {
-        loadBtn.style.display = tab === 'papers' ? '' : 'none';
-    }
+    if (loadBtn) { loadBtn.style.display = tab === 'papers' ? 'block' : 'none'; }
 
-    if (tab !== 'papers') {
-        const g = document.getElementById('filterGroup');
-        const arrow = document.getElementById('filterArrow');
+    const g = document.getElementById('filterGroup');
+    const mobileBtn = document.querySelector('.mobile-filter-btn');
+    const arrow = document.getElementById('filterArrow');
+
+    if (tab === 'leaderboard' || tab === 'saved') {
         if (g) { g.classList.remove('show'); g.style.display = 'none'; }
+        if (mobileBtn) mobileBtn.style.display = 'none';
         if (arrow) arrow.style.transform = 'rotate(0deg)';
+    } else {
+        if (g) g.style.display = '';
+        if (mobileBtn) mobileBtn.style.display = '';
     }
 
-    const filterBar = document.querySelector('.filter-bar');
-    if (filterBar) filterBar.style.marginTop = tab === 'papers' ? '' : '1rem';
-
-    if (tab === 'notes') renderNotes();
+    window.triggerFilter();
     if (tab === 'leaderboard') renderLeaderboard();
-    if (tab === 'saved') renderSavedSection();
 };
 
 window.renderPapers = (resetPage = true) => {
@@ -1046,8 +1115,18 @@ window.renderPapers = (resetPage = true) => {
     filtered.sort((a, b) => {
         const yearA = parseInt(String(a.examYear).replace(/\D/g, '')) || 0;
         const yearB = parseInt(String(b.examYear).replace(/\D/g, '')) || 0;
-        if (sort === 'newest' && yearA !== yearB) return yearB - yearA;
-        if (sort === 'oldest' && yearA !== yearB) return yearA - yearB;
+        
+        const dateA = new Date(a.date).getTime() || 0;
+        const dateB = new Date(b.date).getTime() || 0;
+
+        if (sort === 'newest') {
+            if (yearA !== yearB) return yearB - yearA; 
+            return dateB - dateA;
+        }
+        if (sort === 'oldest') {
+            if (yearA !== yearB) return yearA - yearB;
+            return dateA - dateB;
+        }
         if (sort === 'az') return a.subject.localeCompare(b.subject);
         return 0;
     });
@@ -1088,7 +1167,7 @@ window.toggleFilters = () => {
     const g = document.getElementById('filterGroup');
     g.classList.toggle('show');
     document.getElementById('filterArrow').style.transform = g.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
-    g.style.display = g.classList.contains('show') ? 'grid' : 'none';
+    g.style.display = g.classList.contains('show') ? 'grid' : ''; 
 };
 
 window.updateFilters = () => {
@@ -1132,7 +1211,7 @@ window.updateSubjectDropdown = () => {
         subSelect.add(opt);
     });
 
-    window.renderPapers(true);
+    window.triggerFilter(true);
 };
 
 const savedDark = lsGet('coep_dark', null);
