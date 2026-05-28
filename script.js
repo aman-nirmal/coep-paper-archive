@@ -860,18 +860,16 @@ function renderNotes() {
 
     const year = document.getElementById('filterYear').value;
     const sem = document.getElementById('filterSem').value;
-    const branch = year === 'FY' ? 'Common' : document.getElementById('filterBranch').value;
+    const branch = document.getElementById('filterBranch').value;
     const searchInputEl = document.getElementById('searchInput');
     const search = searchInputEl ? searchInputEl.value.toLowerCase() : '';
 
     const notes = allPapers.filter(p => {
         if (p.docType !== 'notes' && p.docType !== 'syllabus') return false;
-        if (p.year !== year) return false;
-        if (year === 'FY') {
-            if (sem !== 'all' && p.sem !== sem && p.sem !== '---') return false;
-        } else {
-            if (sem !== 'all' && p.sem !== sem && p.sem !== '---') return false;
-            if (p.branch !== branch && p.branch !== 'Common') return false;
+        if (year !== 'all' && p.year !== year) return false;
+        if (sem !== 'all' && p.sem !== sem && p.sem !== '---') return false;
+        if (branch !== 'all') {
+            if (p.year !== 'FY' && p.branch !== branch && p.branch !== 'Common') return false;
         }
         if (search && !p.subject.toLowerCase().includes(search)) return false;
         return true;
@@ -1052,7 +1050,7 @@ window.renderPapers = (resetPage = true) => {
 
     const year = document.getElementById('filterYear').value;
     const sem = document.getElementById('filterSem').value;
-    const branch = year === 'FY' ? 'Common' : document.getElementById('filterBranch').value;
+    const branch = document.getElementById('filterBranch').value;
     const exam = document.getElementById('filterExam').value;
     const subject = document.getElementById('filterSubject').value;
     const search = document.getElementById('searchInput').value.toLowerCase();
@@ -1061,14 +1059,11 @@ window.renderPapers = (resetPage = true) => {
 
     let filtered = allPapers.filter(p => {
         if (p.docType !== 'paper') return false;
-        if (p.year !== year) return false;
-        if (year === 'FY') {
-            if (sem !== 'all' && p.sem !== sem) return false;
-            if (exam !== 'all' && p.examType !== exam) return false;
-        } else {
-            if (sem !== 'all' && p.sem !== sem) return false;
-            if (p.branch !== branch) return false;
-            if (exam !== 'all' && p.examType !== exam) return false;
+        if (year !== 'all' && p.year !== year) return false;
+        if (sem !== 'all' && p.sem !== sem) return false;
+        if (exam !== 'all' && p.examType !== exam) return false;
+        if (branch !== 'all') {
+            if (p.year !== 'FY' && p.branch !== branch && p.branch !== 'Common') return false;
         }
         if (subject !== 'all' && p.subject !== subject) return false;
         if (search && !p.subject.toLowerCase().includes(search)) return false;
@@ -1142,7 +1137,13 @@ window.updateFilters = () => {
 
     semSelect.innerHTML = '<option value="all">All Semesters</option>';
 
-    const sems = year === 'FY' ? ['sem 1', 'sem 2'] : year === 'SY' ? ['sem 3', 'sem 4'] : year === 'TY' ? ['sem 5', 'sem 6'] : ['sem 7', 'sem 8'];
+    let sems = [];
+    if (year === 'all') sems = ['Sem1', 'Sem2', 'Sem3', 'Sem4', 'Sem5', 'Sem6', 'Sem7', 'Sem8'];
+    else if (year === 'FY') sems = ['Sem1', 'Sem2'];
+    else if (year === 'SY') sems = ['Sem3', 'Sem4'];
+    else if (year === 'TY') sems = ['Sem5', 'Sem6'];
+    else if (year === 'BTech') sems = ['Sem7', 'Sem8'];
+
     sems.forEach(s => semSelect.add(new Option(s.replace('Sem', 'Semester '), s)));
 
     window.updateSubjectDropdown();
@@ -1150,18 +1151,21 @@ window.updateFilters = () => {
 
 window.updateSubjectDropdown = () => {
     const year = document.getElementById('filterYear').value;
-    const branch = year === 'FY' ? 'Common' : document.getElementById('filterBranch').value;
+    const branch = document.getElementById('filterBranch').value;
     const sem = document.getElementById('filterSem').value;
     const subSelect = document.getElementById('filterSubject');
 
     let subjects = new Set();
 
     allPapers.forEach(p => {
-        if (p.docType === 'paper' &&
-            p.year === year &&
-           (sem === 'all' || p.sem === sem) &&
-           (year === 'FY' || p.branch === branch)) {
-            subjects.add(p.subject);
+        if (p.docType === 'paper') {
+            const yearMatch = year === 'all' || p.year === year;
+            const semMatch = sem === 'all' || p.sem === sem;
+            const branchMatch = branch === 'all' || p.branch === branch || p.year === 'FY' || p.branch === 'Common';
+
+            if (yearMatch && semMatch && branchMatch) {
+                subjects.add(p.subject);
+            }
         }
     });
 
