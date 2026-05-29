@@ -1016,28 +1016,29 @@ window.switchTab = (tab) => {
     });
 
     document.getElementById('itemsContainer').style.display = tab === 'papers' ? 'grid' : 'none';
+    document.getElementById('filterGroup').closest('.filter-bar').style.display = tab === 'papers' ? '' : 'block';
     document.getElementById('notesSection').style.display = tab === 'notes' ? 'block' : 'none';
     document.getElementById('leaderboardSection').style.display = tab === 'leaderboard' ? 'block' : 'none';
     document.getElementById('savedSection').style.display = tab === 'saved' ? 'block' : 'none';
 
     const loadBtn = document.getElementById('loadMoreBtn');
-    if (loadBtn) { loadBtn.style.display = tab === 'papers' ? 'block' : 'none'; }
-
-    const g = document.getElementById('filterGroup');
-    const mobileBtn = document.querySelector('.mobile-filter-btn');
-    const arrow = document.getElementById('filterArrow');
-
-    if (tab === 'leaderboard' || tab === 'saved') {
-        if (g) { g.classList.remove('show'); g.style.display = 'none'; }
-        if (mobileBtn) mobileBtn.style.display = 'none';
-        if (arrow) arrow.style.transform = 'rotate(0deg)';
-    } else {
-        if (g) g.style.display = '';
-        if (mobileBtn) mobileBtn.style.display = '';
+    if (loadBtn) {
+        loadBtn.style.display = tab === 'papers' ? '' : 'none';
     }
 
-    window.triggerFilter();
+    if (tab !== 'papers') {
+        const g = document.getElementById('filterGroup');
+        const arrow = document.getElementById('filterArrow');
+        if (g) { g.classList.remove('show'); g.style.display = 'none'; }
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+
+    const filterBar = document.querySelector('.filter-bar');
+    if (filterBar) filterBar.style.marginTop = tab === 'papers' ? '' : '1rem';
+
+    if (tab === 'notes') renderNotes();
     if (tab === 'leaderboard') renderLeaderboard();
+    if (tab === 'saved') renderSavedSection();
 };
 
 window.renderPapers = (resetPage = true) => {
@@ -1125,7 +1126,7 @@ window.toggleFilters = () => {
     const g = document.getElementById('filterGroup');
     g.classList.toggle('show');
     document.getElementById('filterArrow').style.transform = g.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
-    g.style.display = g.classList.contains('show') ? 'grid' : ''; 
+    g.style.display = g.classList.contains('show') ? 'grid' : 'none';
 };
 
 window.updateFilters = () => {
