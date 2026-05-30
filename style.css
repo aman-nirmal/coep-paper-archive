@@ -211,6 +211,12 @@ body.dark select.filter-select, body.dark select.form-select { background-image:
     .hero p { font-size: 1rem; }
     .stat-pill { padding: 6px 14px; font-size: 0.85rem; }
     .items-grid, #notesSection, #leaderboardSection, #savedSection { padding: 0 1rem; gap: 1.5rem; }
+    
+    .items-grid, .notes-grid { 
+        grid-template-columns: 1fr; 
+        width: 100%;
+        overflow-x: hidden;
+    }
     .card-footer { flex-direction: row; flex-wrap: wrap; gap: 12px; }
     .card-footer .btn { flex: 1; min-width: 45%; justify-content: center; padding: 14px; }
     .card-icon-actions { width: 100%; justify-content: center; margin-top: 4px; gap: 16px; }
