@@ -6,37 +6,31 @@
     <title>COEP Examination Archive</title>
     <meta name="description" content="A centralized, community-driven repository of COEP MSE and ESE examination papers, class notes, and syllabi.">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f766e">
+    <meta name="theme-color" content="#166534">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="COEP Archive">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-
     <header>
         <div class="nav-container">
             <div class="logo">
                 <div class="logo-box">
-                    <span>COEP PAPER ARCHIVE</span>
+                    <span>COEP ARCHIVE</span>
                 </div>
             </div>
-
             <button class="mobile-menu-btn mobile-only" onclick="window.toggleMobileMenu()">☰</button>
-
             <div class="nav-actions" id="navActions">
-                <button class="icon-btn" id="darkModeToggle" title="Toggle Display Mode" onclick="window.toggleDarkMode()">Dark Mode</button>
-
+                <button class="icon-btn" id="darkModeToggle" onclick="window.toggleDarkMode()">Dark Mode</button>
                 <button class="btn btn-primary" onclick="window.openUploadModal()">
-                    <span class="desktop-only">Submit</span>
-                    <span class="mobile-only">+ Submit Document</span>
+                    <span class="desktop-only">Submit Document</span>
+                    <span class="mobile-only">Submit</span>
                 </button>
-
                 <div id="g_id_onload" data-client_id="980701990716-s643cbvl6gtctgdtgqajgkhct9siko1s.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
                 <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
-
                 <div id="userProfile" style="display:none;">
                     <img id="userAvatar" src="" alt="User">
                     <button class="btn btn-outline" id="adminBtn" style="display:none;" onclick="window.openAdminPanel()">Admin</button>
@@ -58,7 +52,6 @@
     <div class="recently-added-section" id="recentSection">
         <div class="section-header-row">
             <h2 class="section-title">Recent Additions</h2>
-            <span class="section-subtitle">Latest documents uploaded to the repository</span>
         </div>
         <div class="carousel-wrapper">
             <div class="carousel-track" id="carouselTrack"></div>
@@ -69,63 +62,65 @@
         <div class="section-tabs">
             <button class="tab-btn active" id="tabPapers" onclick="window.switchTab('papers')">Papers</button>
             <button class="tab-btn" id="tabNotes" onclick="window.switchTab('notes')">Notes &amp; Syllabi</button>
-            <button class="tab-btn" id="tabLeaderboard" onclick="window.switchTab('leaderboard')">Top Contributors</button>
+            <button class="tab-btn" id="tabLeaderboard" onclick="window.switchTab('leaderboard')">Contributors</button>
             <button class="tab-btn" id="tabSaved" onclick="window.switchTab('saved')">Saved</button>
         </div>
 
-        <button class="mobile-filter-btn" onclick="window.toggleFilters()">
-            <span>Filters &amp; Search</span>
-            <span id="filterArrow">▼</span>
-        </button>
+        <div id="filterControls">
+            <button class="mobile-filter-btn mobile-only" onclick="window.toggleFilters()">
+                <span>Filters &amp; Search</span>
+                <span id="filterArrow">▼</span>
+            </button>
 
-        <div class="filter-group" id="filterGroup">
-            <select class="filter-select" id="filterYear" onchange="window.updateFilters()">
-                <option value="all" selected>All Years</option>
-                <option value="FY">First Year (FY)</option>
-                <option value="SY">Second Year (SY)</option>
-                <option value="TY">Third Year (TY)</option>
-                <option value="BTech">Final Year (BTech)</option>
-            </select>
-
-            <div id="filterBranchContainer">
-                <select class="filter-select" id="filterBranch" onchange="window.updateSubjectDropdown()">
-                    <option value="all" selected>All Branches</option>
-                    <option value="Civil">Civil</option>
-                    <option value="Comp">Computer</option>
-                    <option value="Elec">Electrical</option>
-                    <option value="EnTC">EnTC</option>
-                    <option value="Instru">Instrumentation</option>
-                    <option value="Mech">Mechanical</option>
-                    <option value="Meta">Metallurgy</option>
-                    <option value="Robot">Robotics &amp; AI</option>
-                    <option value="Plan">Planning</option>
-                    <option value="Mfg">Manufacturing</option>
+            <div class="filter-group" id="filterGroup">
+                <select class="filter-select" id="filterYear" onchange="window.updateFilters()">
+                    <option value="all" selected>All Years</option>
+                    <option value="FY">First Year (FY)</option>
+                    <option value="SY">Second Year (SY)</option>
+                    <option value="TY">Third Year (TY)</option>
+                    <option value="BTech">Final Year (BTech)</option>
                 </select>
+
+                <div id="filterBranchContainer">
+                    <select class="filter-select" id="filterBranch" onchange="window.updateSubjectDropdown()">
+                        <option value="all" selected>All Branches</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Comp">Computer</option>
+                        <option value="Elec">Electrical</option>
+                        <option value="EnTC">EnTC</option>
+                        <option value="Instru">Instrumentation</option>
+                        <option value="Mech">Mechanical</option>
+                        <option value="Meta">Metallurgy</option>
+                        <option value="Robot">Robotics &amp; AI</option>
+                        <option value="Plan">Planning</option>
+                        <option value="Mfg">Manufacturing</option>
+                    </select>
+                </div>
+
+                <select class="filter-select" id="filterSem" onchange="window.updateSubjectDropdown()">
+                    <option value="all">All Semesters</option>
+                </select>
+
+                <select class="filter-select" id="filterExam" onchange="window.triggerFilter()">
+                    <option value="all">All Examinations</option>
+                    <option value="MSE">Mid Semester (MSE)</option>
+                    <option value="ESE">End Semester (ESE)</option>
+                </select>
+
+                <select class="filter-select" id="filterSubject" onchange="window.triggerFilter()">
+                    <option value="all">All Subjects</option>
+                </select>
+
+                <select class="filter-select" id="filterSort" onchange="window.triggerFilter()">
+                    <option value="newest">Chronological (Newest)</option>
+                    <option value="oldest">Chronological (Oldest)</option>
+                    <option value="az">Alphabetical (A-Z)</option>
+                </select>
+
+                <input type="text" id="searchInput" class="search-box" placeholder="Search by subject name..." onkeyup="window.triggerFilter()">
             </div>
-
-            <select class="filter-select" id="filterSem" onchange="window.updateSubjectDropdown()">
-                <option value="all">All Semesters</option>
-            </select>
-
-            <select class="filter-select" id="filterExam" onchange="window.triggerFilter()">
-                <option value="all">All Examinations</option>
-                <option value="MSE">Mid Semester (MSE)</option>
-                <option value="ESE">End Semester (ESE)</option>
-            </select>
-
-            <select class="filter-select" id="filterSubject" onchange="window.triggerFilter()">
-                <option value="all">All Subjects</option>
-            </select>
-
-            <select class="filter-select" id="filterSort" onchange="window.triggerFilter()">
-                <option value="newest">Chronological (Newest)</option>
-                <option value="oldest">Chronological (Oldest)</option>
-                <option value="az">Alphabetical (A-Z)</option>
-            </select>
-
-            <input type="text" id="searchInput" class="search-box" placeholder="Search by subject name..." onkeyup="window.triggerFilter()">
+        </div> 
         </div>
-    </div>
 
     <div class="items-grid" id="itemsContainer"></div>
 
@@ -143,7 +138,7 @@
 
     <footer>
         <div class="footer-thanks">Maintained by the Student Community</div>
-        <div class="footer-credit">Developed by Aman | FY Electrical Engineering</div>
+        <div class="footer-credit">Developed by Aman | Electrical Engineering</div>
     </footer>
 
     <div class="modal-overlay" id="pdfPreviewModal">
@@ -156,9 +151,8 @@
                 <iframe id="pdfPreviewFrame" src="" allow="autoplay"></iframe>
             </div>
             <div class="modal-footer">
-                <a id="pdfOpenLink" href="#" target="_blank" class="btn btn-primary">Open in Google Drive</a>
+                <a id="pdfOpenLink" href="#" target="_blank" class="btn btn-primary">Open in Drive</a>
                 <button class="btn btn-outline" id="copyLinkBtn" onclick="window.copyPdfLink()">Copy Link</button>
-                <button class="btn btn-outline" onclick="window.closePdfModal()">Close</button>
             </div>
         </div>
     </div>
@@ -170,24 +164,20 @@
                 <button class="modal-close" onclick="window.closeUploadModal()">✕</button>
             </div>
             <div class="modal-body">
-                <p class="modal-desc">All submissions are reviewed prior to publication to ensure quality and relevance.</p>
-
+                <p class="modal-desc">All submissions are reviewed prior to publication.</p>
                 <div id="anonymousNameField" style="display:none;">
-                    <label class="form-label">Your Name *</label>
+                    <label class="form-label">Your Name</label>
                     <input type="text" class="form-input" id="uploadUploaderName" placeholder="e.g., Aman">
                 </div>
-
-                <label class="form-label">Document Category *</label>
+                <label class="form-label">Document Category</label>
                 <select class="form-select" id="uploadDocType" onchange="window.toggleDocTypeFields()">
                     <option value="paper">Examination Paper</option>
                     <option value="notes">Class Notes</option>
                     <option value="syllabus">Syllabus</option>
                 </select>
-
-                <label class="form-label" id="subjectLabel">Subject Title *</label>
+                <label class="form-label" id="subjectLabel">Subject Title</label>
                 <input type="text" class="form-input" id="uploadSubject" list="subjectList" placeholder="e.g., Engineering Physics (EP)">
                 <datalist id="subjectList"></datalist>
-
                 <label class="form-label" id="academicLabel">Academic Year &amp; Semester</label>
                 <div id="academicGrid">
                     <select class="form-select" id="uploadYear" onchange="window.toggleUploadBranch()">
@@ -207,9 +197,8 @@
                         <option value="Sem8">Semester 8</option>
                     </select>
                 </div>
-
                 <div id="uploadBranchContainer" style="display:none;">
-                    <label class="form-label">Branch *</label>
+                    <label class="form-label">Branch</label>
                     <select class="form-select" id="uploadBranch">
                         <option value="Civil">Civil</option>
                         <option value="Comp">Computer</option>
@@ -223,43 +212,33 @@
                         <option value="Mfg">Manufacturing</option>
                     </select>
                 </div>
-
                 <div id="examSpecificFields">
                     <label class="form-label">Examination Type</label>
                     <select class="form-select" id="uploadExamType">
                         <option value="MSE">Mid Semester (MSE)</option>
                         <option value="ESE">End Semester (ESE)</option>
                     </select>
-
                     <label class="form-label">Examination Year</label>
                     <input type="number" class="form-input" id="uploadExamYear" placeholder="e.g., 2024" min="2000" max="2099" step="1">
                 </div>
-
                 <div id="notesSpecificFields" style="display:none;">
-                    <label class="form-label">Module / Topic (Optional)</label>
+                    <label class="form-label">Module / Topic</label>
                     <input type="text" class="form-input" id="uploadNoteTopic" placeholder="e.g., Module 1: Quantum Mechanics">
-
-                    <label class="form-label">Author / Professor (Optional)</label>
+                    <label class="form-label">Author / Professor</label>
                     <input type="text" class="form-input" id="uploadNoteAuthor" placeholder="e.g., Prof. Sharma">
                 </div>
-
                 <div id="duplicateWarning" style="display:none;">
-                    ⚠️ A document with these details already exists in the archive. Please verify before submitting.
+                    ⚠️ A document with these details already exists.
                 </div>
-
-                <label class="form-label">Upload Document *</label>
+                <label class="form-label">Upload Document</label>
                 <div id="uploadFileArea">
-                    <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()"
-                         ondragover="event.preventDefault(); this.classList.add('dragover')"
-                         ondragleave="this.classList.remove('dragover')"
-                         ondrop="window.handleDrop(event)">
-                        <div class="dropzone-text">Drag and drop a PDF file, or click to browse</div>
-                        <div class="dropzone-hint">Maximum size: 20MB · PDF format only</div>
+                    <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="window.handleDrop(event)">
+                        <div class="dropzone-text">Tap to browse or drag PDF here</div>
+                        <div class="dropzone-hint">Maximum size: 20MB</div>
                     </div>
                     <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="window.handleFileSelect(event)">
                     <div id="fileStatus" class="file-status"></div>
                 </div>
-
                 <div id="uploadProgressWrap" style="display:none;">
                     <div class="upload-progress-header">
                         <span class="upload-progress-label">Uploading…</span>
@@ -284,7 +263,7 @@
                 <button class="modal-close" onclick="window.closeAdminModal()">✕</button>
             </div>
             <div class="modal-body" id="adminPanelContent">
-                <p style="color:var(--gray);">Initializing...</p>
+                <p style="color:var(--text-muted);">Initializing...</p>
             </div>
         </div>
     </div>
@@ -299,13 +278,13 @@
                 <p class="modal-desc" id="reportSubjectLabel">Document referenced: <strong id="reportPaperName">—</strong></p>
                 <label class="form-label">Select Issue Type</label>
                 <select class="form-select" id="reportType">
-                    <option value="broken">Link is broken or expired</option>
-                    <option value="wrong">Incorrect document uploaded</option>
-                    <option value="corrupt">File is corrupted or unreadable</option>
+                    <option value="broken">Link is broken</option>
+                    <option value="wrong">Incorrect document</option>
+                    <option value="corrupt">File is corrupted</option>
                     <option value="other">Other</option>
                 </select>
-                <label class="form-label">Additional Comments (Optional)</label>
-                <textarea class="form-input" id="reportDetails" rows="3" placeholder="Provide further details..."></textarea>
+                <label class="form-label">Additional Comments</label>
+                <textarea class="form-input" id="reportDetails" rows="3" placeholder="Details..."></textarea>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" onclick="window.submitReport()">Submit Report</button>
@@ -323,13 +302,11 @@
             const year = document.getElementById('uploadYear').value;
             document.getElementById('uploadBranchContainer').style.display = year === 'FY' ? 'none' : 'block';
         };
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').catch(() => {});
             });
         }
-
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Escape') return;
             const modals = ['pdfPreviewModal', 'uploadModal', 'adminModal', 'reportModal'];
