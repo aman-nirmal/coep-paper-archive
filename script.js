@@ -1,8 +1,6 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk8dwV-Q9kdFRXGiUf3CBvnhhTh8_Y1rmDf9ve41JawKoNmC17s-7pZ4oAPnGe7mgI/exec";
-
 let currentUser = null;
 const ADMIN_EMAILS = ['coep.paper.archive@gmail.com'];
-
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
 
@@ -13,22 +11,18 @@ window.handleCredentialResponse = async (response) => {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
     const payload = JSON.parse(jsonPayload);
-
     currentUser = {
         name: payload.name,
         email: payload.email,
         picture: payload.picture,
         token: response.credential
     };
-
     document.querySelector('.g_id_signin').style.display = 'none';
     document.getElementById('userProfile').style.display = 'flex';
     document.getElementById('userAvatar').src = currentUser.picture;
-
     if (ADMIN_EMAILS.includes(currentUser.email)) {
         document.getElementById('adminBtn').style.display = 'block';
     }
-
     await syncBookmarksFromServer();
     showToast(`Welcome back, ${currentUser.name}!`);
 };
@@ -51,7 +45,6 @@ function lsGet(key, fallback) {
 function lsSet(key, val) {
     try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
 }
-
 function getPending() { return lsGet('coep_pending', []); }
 function savePending(arr) { lsSet('coep_pending', arr); }
 function getApproved() { return lsGet('coep_approved', []); }
@@ -74,7 +67,6 @@ async function fetchLivePapers() {
         const response = await fetch(WEB_APP_URL);
         if (!response.ok) throw new Error('Network response was not ok');
         const liveData = await response.json();
-
         const communityPapers = liveData.map(item => ({
             id: generateStableId(item),
             subject: item.Subject,
@@ -91,16 +83,12 @@ async function fetchLivePapers() {
             noteTopic: item.NoteTopic || '',
             noteAuthor: item.NoteAuthor || ''
         })).reverse();
-
         allPapers = [...getApproved(), ...communityPapers];
-
         updateSubjectDatalist();
         window.updateFilters();
         updateStats();
         renderCarousel();
-
         window.switchTab(currentTab);
-
     } catch (error) {
         console.error(error);
         showFetchError();
@@ -197,19 +185,15 @@ function updateStats() {
 function renderCarousel() {
     const track = document.getElementById('carouselTrack');
     if (!track) return;
-
     const recent = [...allPapers]
         .filter(p => p.link && p.docType === 'paper')
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 12);
-
     track.innerHTML = '';
-
     if (recent.length === 0) {
         track.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem; padding: 10px;">Repository initializing. No documents available yet.</div>';
         return;
     }
-
     recent.forEach(p => {
         const examClass = p.examType === 'MSE' ? 'tag-mse' : 'tag-ese';
         const card = document.createElement('div');
@@ -228,7 +212,6 @@ function renderCarousel() {
         });
         track.appendChild(card);
     });
-
     initCarouselSwipe(track);
 }
 
@@ -237,19 +220,16 @@ function initCarouselSwipe(track) {
     let startX = 0;
     let scrollStart = 0;
     let isDragging = false;
-
     wrapper.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         scrollStart = wrapper.scrollLeft;
         isDragging = true;
     }, { passive: true });
-
     wrapper.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
         const dx = startX - e.touches[0].clientX;
         wrapper.scrollLeft = scrollStart + dx;
     }, { passive: true });
-
     wrapper.addEventListener('touchend', () => { isDragging = false; });
 }
 
@@ -315,9 +295,7 @@ async function syncBookmarksFromServer() {
         const localBm = getBookmarks();
         const merged = [...new Set([...serverBm, ...localBm])];
         _saveBookmarksLocal(merged);
-
         if (merged.length > serverBm.length) await _pushBookmarksToServer(merged);
-
         updateBookmarkBadge();
         if (currentTab === 'saved') renderSavedSection();
         _refreshAllBookmarkButtons(merged);
@@ -336,7 +314,6 @@ window.toggleBookmark = async function(id) {
         bm = bm.filter(x => x !== id);
         showToast('Document removed from saved items.');
     }
-
     _saveBookmarksLocal(bm);
     updateBookmarkBadge();
     _refreshAllBookmarkButtons(bm);
@@ -389,10 +366,8 @@ window.submitReport = async () => {
         reporterEmail: currentUser?.email || 'anonymous',
         timestamp: new Date().toISOString()
     };
-
     window.closeReportModal();
     showToast('Submitting report...');
-
     try {
         await fetch(WEB_APP_URL, {
             method: 'POST',
@@ -419,15 +394,13 @@ window.toggleDocTypeFields = () => {
     const academicLabel = document.getElementById('academicLabel');
     const subjectInput = document.getElementById('uploadSubject');
     const subjectLabel = document.getElementById('subjectLabel');
-
     if (examFields) examFields.style.display = (docType === 'paper') ? 'block' : 'none';
     if (noteFields) noteFields.style.display = (docType === 'notes') ? 'block' : 'none';
-
     if (docType === 'syllabus') {
         if (semSelect) semSelect.style.display = 'none';
         if (academicGrid) academicGrid.style.gridTemplateColumns = '1fr';
         if (academicLabel) academicLabel.textContent = 'Academic Year';
-        if (subjectLabel) subjectLabel.textContent = 'Syllabus Title *';
+        if (subjectLabel) subjectLabel.textContent = 'Syllabus Title';
         if (subjectInput) {
             subjectInput.removeAttribute('list');
             subjectInput.placeholder = 'e.g., Complete Computer Engineering Syllabus 2024';
@@ -436,13 +409,12 @@ window.toggleDocTypeFields = () => {
         if (semSelect) semSelect.style.display = 'block';
         if (academicGrid) academicGrid.style.gridTemplateColumns = '1fr 1fr';
         if (academicLabel) academicLabel.innerHTML = 'Academic Year &amp; Semester';
-        if (subjectLabel) subjectLabel.textContent = 'Subject Title *';
+        if (subjectLabel) subjectLabel.textContent = 'Subject Title';
         if (subjectInput) {
             subjectInput.setAttribute('list', 'subjectList');
             subjectInput.placeholder = 'e.g., Engineering Physics (EP)';
         }
     }
-
     window.toggleUploadBranch();
 };
 
@@ -496,18 +468,15 @@ function resetUploadForm() {
     selectedFile = null;
     const ids = ['uploadSubject', 'uploadExamYear', 'uploadNoteTopic', 'uploadNoteAuthor', 'uploadUploaderName'];
     ids.forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
-
     const docType = document.getElementById('uploadDocType');
     if (docType) docType.value = 'paper';
     window.toggleDocTypeFields();
-
     const status = document.getElementById('fileStatus');
     if (status) { status.textContent = ''; status.className = 'file-status'; }
     const dz = document.getElementById('dropzone');
-    if (dz) dz.querySelector('.dropzone-text').textContent = 'Drag and drop a PDF file, or click to browse';
+    if (dz) dz.querySelector('.dropzone-text').textContent = 'Tap to browse or drag PDF here';
     const dupWarn = document.getElementById('duplicateWarning');
     if (dupWarn) dupWarn.style.display = 'none';
-
     const progressWrap = document.getElementById('uploadProgressWrap');
     if (progressWrap) progressWrap.style.display = 'none';
     setUploadProgress(0);
@@ -542,20 +511,16 @@ window.submitUpload = () => {
             return;
         }
     }
-
     const docType = document.getElementById('uploadDocType')?.value || 'paper';
     const subject = document.getElementById('uploadSubject').value.trim();
     const year = document.getElementById('uploadYear').value;
     const sem = docType === 'syllabus' ? '---' : document.getElementById('uploadSem').value;
     const branchValue = year === 'FY' ? 'Common' : document.getElementById('uploadBranch')?.value || 'Common';
-
     if (!subject) { showToast('Title is required.'); return; }
-
     let examType = '---';
     let examYear = '---';
     let noteTopic = '';
     let noteAuthor = '';
-
     if (docType === 'paper') {
         examType = document.getElementById('uploadExamType').value;
         const rawYear = document.getElementById('uploadExamYear').value.trim();
@@ -568,24 +533,19 @@ window.submitUpload = () => {
         noteTopic = document.getElementById('uploadNoteTopic').value.trim();
         noteAuthor = document.getElementById('uploadNoteAuthor').value.trim();
     }
-
     if (!selectedFile) { showToast('Please select a PDF file to upload.'); return; }
-
     if (checkForDuplicate(subject, year, sem, docType, examType, examYear)) {
         const dupWarn = document.getElementById('duplicateWarning');
         if (dupWarn) dupWarn.style.display = 'block';
         showToast('A document with these details already exists in the archive.');
         return;
     }
-
     const progressWrap = document.getElementById('uploadProgressWrap');
     if (progressWrap) progressWrap.style.display = 'block';
     setUploadProgress(10);
-
     const submitBtn = document.querySelector('#uploadModal .btn-primary');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Processing...';
-
     const payload = {
         action: 'submit',
         token: currentUser ? currentUser.token : null,
@@ -596,7 +556,6 @@ window.submitUpload = () => {
         fileName: selectedFile.name,
         mimeType: selectedFile.type
     };
-
     const reader = new FileReader();
     reader.onload = function(e) {
         setUploadProgress(40);
@@ -621,7 +580,6 @@ function sendToBackend(payload) {
         setUploadProgress(100);
         const submitBtn = document.querySelector('#uploadModal .btn-primary');
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit'; }
-
         if (result.status === 'success') {
             const submission = {
                 id: 'sub_' + Date.now(),
@@ -633,11 +591,9 @@ function sendToBackend(payload) {
             };
             delete submission.fileData;
             delete submission.token;
-
             const pending = getPending();
             pending.unshift(submission);
             savePending(pending);
-
             window.closeUploadModal();
             showToast('Submission successful. The document is pending administrator review.');
         } else {
@@ -674,23 +630,18 @@ function renderAdminPanel() {
     const container = document.getElementById('adminPanelContent');
     const pending = getPending();
     const reports = lsGet('coep_reports', []);
-
     if (!pending.length && !reports.length) {
         container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:2rem;">System status: Operational. No pending actions.</p>';
         return;
     }
-
     let html = '';
-
     if (pending.length) {
         html += `<h4 style="margin-bottom:1rem; color:var(--text);">Pending Submissions (${pending.length})</h4>`;
         pending.forEach(sub => {
             const typeLabel = sub.docType === 'notes' ? 'Class Notes' : (sub.docType === 'syllabus' ? 'Syllabus' : 'Exam Paper');
-
             let metaString = `${escAttr(sub.year)}`;
             if (sub.sem !== '---') metaString += ` · ${escAttr(sub.sem)}`;
             if (sub.docType === 'paper') metaString += ` · ${escAttr(sub.examType)} · ${escAttr(String(sub.examYear))}`;
-
             html += `
             <div class="admin-submission" id="sub_${escAttr(sub.id)}">
                 <div style="display:flex; justify-content:space-between; align-items:start;">
@@ -709,7 +660,6 @@ function renderAdminPanel() {
             </div>`;
         });
     }
-
     if (reports.length) {
         html += `<h4 style="margin:1.5rem 0 1rem; color:var(--text);">Local Reports (${reports.length})</h4>`;
         reports.forEach((r, i) => {
@@ -726,7 +676,6 @@ function renderAdminPanel() {
             </div>`;
         });
     }
-
     container.innerHTML = html;
 }
 
@@ -734,9 +683,7 @@ window.adminApprove = async (id) => {
     const pending = getPending();
     const sub = pending.find(s => s.id === id);
     if (!sub) return;
-
     showToast('Approving document...');
-
     try {
         const response = await fetch(WEB_APP_URL, {
             method: 'POST',
@@ -746,14 +693,12 @@ window.adminApprove = async (id) => {
                 link: sub.link
             })
         });
-
         const result = await response.json();
         if (result.status === 'success') {
             const approved = getApproved();
             approved.unshift({ ...sub, status: 'approved' });
             saveApproved(approved);
             savePending(pending.filter(s => s.id !== id));
-
             allPapers = [...getApproved()];
             fetchLivePapers();
             renderAdminPanel();
@@ -770,9 +715,7 @@ window.adminReject = async (id) => {
     const pending = getPending();
     const sub = pending.find(s => s.id === id);
     if (!sub) return;
-
     showToast('Rejecting document...');
-
     try {
         await fetch(WEB_APP_URL, {
             method: 'POST',
@@ -782,7 +725,6 @@ window.adminReject = async (id) => {
                 link: sub.link
             })
         });
-
         savePending(pending.filter(s => s.id !== id));
         renderAdminPanel();
         showToast('Submission securely rejected.');
@@ -808,15 +750,12 @@ window.triggerFilter = (resetPage = true) => {
 function renderLeaderboard() {
     const container = document.getElementById('leaderboardContainer');
     if (!container) return;
-
     const counts = {};
-
     allPapers.filter(p => p.link && !ADMIN_EMAILS.includes((p.creatorEmail || '').toLowerCase())).forEach(p => {
         if (p.creatorName !== 'System Admin' && p.creatorName !== 'Admin') {
             counts[p.creatorName] = (counts[p.creatorName] || 0) + 1;
         }
     });
-
     getPending().forEach(s => {
         if (!ADMIN_EMAILS.includes((s.creatorEmail || '').toLowerCase())) {
             if (s.creatorName !== 'System Admin' && s.creatorName !== 'Admin') {
@@ -824,9 +763,7 @@ function renderLeaderboard() {
             }
         }
     });
-
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-
     if (!sorted.length) {
         container.innerHTML = `
             <div class="leaderboard-header"><h2>Top Contributors</h2><p>Recognition for repository contributors</p></div>
@@ -836,16 +773,13 @@ function renderLeaderboard() {
             </div>`;
         return;
     }
-
     const rankClasses = ['gold', 'silver', 'bronze'];
     const badges = ['Scholar', 'Contributor', 'Participant', 'Member'];
-
     let rows = sorted.map(([name, count], i) => {
         const rank = i < 3 ? `<span class="lb-rank ${rankClasses[i]}">#${i + 1}</span>` : `<span class="lb-rank">#${i + 1}</span>`;
         const badge = i < 4 ? `<span class="lb-badge">${badges[i]}</span>` : '';
         return `<div class="leaderboard-row">${rank}<span class="lb-name">${escAttr(name)}</span>${badge}<span class="lb-count">${count} document${count !== 1 ? 's' : ''}</span></div>`;
     }).join('');
-
     container.innerHTML = `
         <div class="leaderboard-header">
             <h2>Top Contributors</h2>
@@ -857,13 +791,11 @@ function renderLeaderboard() {
 function renderNotes() {
     const container = document.getElementById('notesContainer');
     if (!container) return;
-
     const year = document.getElementById('filterYear').value;
     const sem = document.getElementById('filterSem').value;
     const branch = document.getElementById('filterBranch').value;
     const searchInputEl = document.getElementById('searchInput');
     const search = searchInputEl ? searchInputEl.value.toLowerCase() : '';
-
     const notes = allPapers.filter(p => {
         if (p.docType !== 'notes' && p.docType !== 'syllabus') return false;
         if (year !== 'all' && p.year !== year) return false;
@@ -874,28 +806,23 @@ function renderNotes() {
         if (search && !p.subject.toLowerCase().includes(search)) return false;
         return true;
     });
-
     notes.sort((a, b) => new Date(b.date) - new Date(a.date));
-
     if (!notes.length) {
         container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:4rem; grid-column:1/-1;">No supplemental documents found matching criteria.</p>';
         return;
     }
-
     container.innerHTML = notes.map(n => {
         const typeLabel = n.docType === 'notes' ? 'Notes' : 'Syllabus';
         const titleText = `${escAttr(n.subject)}${n.noteTopic ? ` - ${escAttr(n.noteTopic)}` : ''}`;
         const authorText = n.noteAuthor ? ` (${escAttr(n.noteAuthor)})` : '';
-        const semText = n.sem === '---' ? '' : ` · ${escAttr(n.sem)}`;
-
         return `
         <div class="note-card">
             <div class="note-card-type note-type-${escAttr(n.docType)}">${typeLabel}</div>
             <div class="note-card-title">${titleText}</div>
             <div class="note-card-meta">Date: ${new Date(n.date).toLocaleDateString('en-IN')} &nbsp;|&nbsp; Source: ${escAttr(n.creatorName)}${authorText}</div>
-            <div style="display:flex; gap:8px; margin-top:auto;">
-                <button onclick="window.openPdfPreview('${escAttr(n.subject.replace(/'/g, "\\'"))}', '${escAttr(n.link)}')" class="btn btn-outline" style="flex:1; font-size:0.88rem; padding:8px;">Preview</button>
-                <a href="${escAttr(n.link)}" target="_blank" class="btn btn-primary" style="flex:1; text-decoration:none; font-size:0.88rem; padding:8px; text-align:center;">Access</a>
+            <div style="display:flex; gap:12px; margin-top:auto;">
+                <button onclick="window.openPdfPreview('${escAttr(n.subject.replace(/'/g, "\\'"))}', '${escAttr(n.link)}')" class="btn btn-outline" style="flex:1;">Preview</button>
+                <a href="${escAttr(n.link)}" target="_blank" class="btn btn-primary" style="flex:1; text-decoration:none; text-align:center;">Access</a>
             </div>
         </div>
     `}).join('');
@@ -905,21 +832,16 @@ function renderSavedSection() {
     const container = document.getElementById('savedContainer');
     if (!container) return;
     const bm = getBookmarks();
-    
     const searchInputEl = document.getElementById('searchInput');
     const search = searchInputEl ? searchInputEl.value.toLowerCase() : '';
-
     let saved = allPapers.filter(p => bm.includes(p.id));
-
     if (search) {
         saved = saved.filter(p => p.subject.toLowerCase().includes(search));
     }
-
     if (!saved.length) {
         container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:4rem; color:var(--text-muted);"><p style="font-size:1.1rem; font-weight:600;">No saved documents.</p><p>Select the star icon on any document card to save it to this section.</p></div>';
         return;
     }
-
     container.innerHTML = '';
     saved.forEach(p => {
         container.appendChild(buildCard(p));
@@ -929,68 +851,54 @@ function renderSavedSection() {
 function buildCard(p) {
     const examClass = p.examType === 'MSE' ? 'tag-mse' : (p.examType === 'ESE' ? 'tag-ese' : 'tag-sem');
     const info = `<span>Date: ${new Date(p.date).toLocaleDateString('en-IN')}</span><span>Source: ${escAttr(p.creatorName)}</span>`;
-
     const bookmarked = isBookmarked(p.id);
     const bmClass = bookmarked ? 'card-icon-btn bm-btn bookmarked' : 'card-icon-btn bm-btn';
     const bmIcon = bookmarked ? '★' : '☆';
-
     const card = document.createElement('div');
     card.className = 'card';
-
     const footer = document.createElement('div');
     footer.className = 'card-footer';
-
     if (p.link) {
         const previewBtn = document.createElement('button');
         previewBtn.className = 'btn btn-outline';
         previewBtn.style.cssText = 'flex:1; justify-content:center;';
         previewBtn.textContent = 'Preview';
         previewBtn.addEventListener('click', () => window.openPdfPreview(p.subject, p.link));
-
         const accessLink = document.createElement('a');
         accessLink.href = p.link;
         accessLink.target = '_blank';
         accessLink.className = 'btn btn-primary';
         accessLink.style.cssText = 'flex:1; justify-content:center; text-decoration:none;';
         accessLink.textContent = 'Access';
-
         const iconActions = document.createElement('div');
         iconActions.className = 'card-icon-actions';
-
         const bmBtn = document.createElement('button');
         bmBtn.className = bmClass;
         bmBtn.dataset.id = p.id;
         bmBtn.title = bookmarked ? 'Remove from saved' : 'Save document';
         bmBtn.textContent = bmIcon;
-        bmBtn.style.cssText = 'font-size: 1.1rem; padding: 4px 8px;';
         bmBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             window.toggleBookmark(p.id);
         });
-
         const reportBtn = document.createElement('button');
         reportBtn.className = 'card-icon-btn';
         reportBtn.title = 'Report discrepancy';
         reportBtn.textContent = 'Report';
-        reportBtn.style.cssText = 'font-size: 0.85rem; font-weight:600;';
         reportBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             window.openReportModal({ id: p.id, subject: p.subject, link: p.link });
         });
-
         iconActions.appendChild(bmBtn);
         iconActions.appendChild(reportBtn);
-
         footer.appendChild(previewBtn);
         footer.appendChild(accessLink);
         footer.appendChild(iconActions);
     }
-
     const docTags = p.docType === 'paper'
         ? `<span class="tag ${examClass}">${escAttr(p.examType)}</span>
            ${p.examYear !== '---' ? `<span class="tag tag-year-num">${escAttr(String(p.examYear))}</span>` : ''}`
         : `<span class="tag" style="background:#e2e8f0; color:#334155;">${p.docType === 'notes' ? 'Class Notes' : 'Syllabus'}</span>`;
-
     card.innerHTML = `
         <div class="card-header">
             <h3 class="card-title">${escAttr(p.subject)}</h3>
@@ -1016,25 +924,30 @@ window.switchTab = (tab) => {
     });
 
     document.getElementById('itemsContainer').style.display = tab === 'papers' ? 'grid' : 'none';
-    document.getElementById('filterGroup').closest('.filter-bar').style.display = tab === 'papers' ? '' : 'block';
+    
+    const filterControls = document.getElementById('filterControls');
+    if (filterControls) {
+        filterControls.style.display = (tab === 'papers' || tab === 'notes') ? 'block' : 'none';
+    }
+
     document.getElementById('notesSection').style.display = tab === 'notes' ? 'block' : 'none';
     document.getElementById('leaderboardSection').style.display = tab === 'leaderboard' ? 'block' : 'none';
     document.getElementById('savedSection').style.display = tab === 'saved' ? 'block' : 'none';
 
     const loadBtn = document.getElementById('loadMoreBtn');
     if (loadBtn) {
-        loadBtn.style.display = tab === 'papers' ? '' : 'none';
+        loadBtn.style.display = tab === 'papers' ? 'block' : 'none';
     }
 
-    if (tab !== 'papers') {
+    if (tab !== 'papers' && tab !== 'notes') {
         const g = document.getElementById('filterGroup');
         const arrow = document.getElementById('filterArrow');
-        if (g) { g.classList.remove('show'); g.style.display = 'none'; }
+        if (g) { 
+            g.classList.remove('show'); 
+            g.style.display = ''; // Clears inline style so CSS takes over
+        }
         if (arrow) arrow.style.transform = 'rotate(0deg)';
     }
-
-    const filterBar = document.querySelector('.filter-bar');
-    if (filterBar) filterBar.style.marginTop = tab === 'papers' ? '' : '1rem';
 
     if (tab === 'notes') renderNotes();
     if (tab === 'leaderboard') renderLeaderboard();
@@ -1043,12 +956,10 @@ window.switchTab = (tab) => {
 
 window.renderPapers = (resetPage = true) => {
     const container = document.getElementById('itemsContainer');
-
     if (resetPage) {
         currentPage = 1;
         container.innerHTML = '';
     }
-
     const year = document.getElementById('filterYear').value;
     const sem = document.getElementById('filterSem').value;
     const branch = document.getElementById('filterBranch').value;
@@ -1057,7 +968,6 @@ window.renderPapers = (resetPage = true) => {
     const search = document.getElementById('searchInput').value.toLowerCase();
     const sortEl = document.getElementById('filterSort');
     const sort = sortEl ? sortEl.value : 'newest';
-
     let filtered = allPapers.filter(p => {
         if (p.docType !== 'paper') return false;
         if (year !== 'all' && p.year !== year) return false;
@@ -1070,14 +980,11 @@ window.renderPapers = (resetPage = true) => {
         if (search && !p.subject.toLowerCase().includes(search)) return false;
         return true;
     });
-
     filtered.sort((a, b) => {
         const yearA = parseInt(String(a.examYear).replace(/\D/g, '')) || 0;
         const yearB = parseInt(String(b.examYear).replace(/\D/g, '')) || 0;
-        
         const dateA = new Date(a.date).getTime() || 0;
         const dateB = new Date(b.date).getTime() || 0;
-
         if (sort === 'newest') {
             if (yearA !== yearB) return yearB - yearA; 
             return dateB - dateA;
@@ -1089,21 +996,16 @@ window.renderPapers = (resetPage = true) => {
         if (sort === 'az') return a.subject.localeCompare(b.subject);
         return 0;
     });
-
     if (!filtered.length && resetPage) {
         container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:4rem; color:var(--text-muted);"><p style="font-size:1.05rem; font-weight:600;">No examination documents found matching the selected criteria.</p></div>';
         const oldBtn = document.getElementById('loadMoreBtn');
         if (oldBtn) oldBtn.remove();
         return;
     }
-
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const paginatedItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
     paginatedItems.forEach(p => container.appendChild(buildCard(p)));
-
     let loadMoreBtn = document.getElementById('loadMoreBtn');
-
     if (startIndex + ITEMS_PER_PAGE < filtered.length) {
         if (!loadMoreBtn) {
             loadMoreBtn = document.createElement('button');
@@ -1133,20 +1035,15 @@ window.updateFilters = () => {
     const year = document.getElementById('filterYear').value;
     const branchContainer = document.getElementById('filterBranchContainer');
     const semSelect = document.getElementById('filterSem');
-
     branchContainer.style.display = year === 'FY' ? 'none' : 'block';
-
     semSelect.innerHTML = '<option value="all">All Semesters</option>';
-
     let sems = [];
-    if (year === 'all') sems = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6', 'Sem 7', 'Sem 8'];
-    else if (year === 'FY') sems = ['Sem 1', 'Sem 2'];
-    else if (year === 'SY') sems = ['Sem 3', 'Sem 4'];
-    else if (year === 'TY') sems = ['Sem 5', 'Sem 6'];
-    else if (year === 'BTech') sems = ['Sem 7', 'Sem 8'];
-
+    if (year === 'all') sems = ['Sem1', 'Sem2', 'Sem3', 'Sem4', 'Sem5', 'Sem6', 'Sem7', 'Sem8'];
+    else if (year === 'FY') sems = ['Sem1', 'Sem2'];
+    else if (year === 'SY') sems = ['Sem3', 'Sem4'];
+    else if (year === 'TY') sems = ['Sem5', 'Sem6'];
+    else if (year === 'BTech') sems = ['Sem7', 'Sem8'];
     sems.forEach(s => semSelect.add(new Option(s.replace('Sem', 'Semester '), s)));
-
     window.updateSubjectDropdown();
 };
 
@@ -1155,30 +1052,24 @@ window.updateSubjectDropdown = () => {
     const branch = document.getElementById('filterBranch').value;
     const sem = document.getElementById('filterSem').value;
     const subSelect = document.getElementById('filterSubject');
-
     let subjects = new Set();
-
     allPapers.forEach(p => {
         if (p.docType === 'paper') {
             const yearMatch = year === 'all' || p.year === year;
             const semMatch = sem === 'all' || p.sem === sem;
             const branchMatch = branch === 'all' || p.branch === branch || p.year === 'FY' || p.branch === 'Common';
-
             if (yearMatch && semMatch && branchMatch) {
                 subjects.add(p.subject);
             }
         }
     });
-
     const currentSelected = subSelect.value;
     subSelect.innerHTML = '<option value="all">All Subjects</option>';
-
     Array.from(subjects).sort().forEach(s => {
         const opt = new Option(s, s);
         if (s === currentSelected) opt.selected = true;
         subSelect.add(opt);
     });
-
     window.triggerFilter(true);
 };
 
