@@ -23,13 +23,11 @@
                     <span>COEP PAPER ARCHIVE</span>
                 </div>
             </div>
-            
-            <button class="mobile-menu-btn mobile-only" onclick="window.toggleMobileMenu()">
-                ☰
-            </button>
+
+            <button class="mobile-menu-btn mobile-only" onclick="window.toggleMobileMenu()">☰</button>
 
             <div class="nav-actions" id="navActions">
-                <button class="icon-btn" id="darkModeToggle" title="Toggle Display Mode" onclick="window.toggleDarkMode()" style="font-size: 0.85rem; font-weight: 600;">Dark Mode</button>
+                <button class="icon-btn" id="darkModeToggle" title="Toggle Display Mode" onclick="window.toggleDarkMode()">Dark Mode</button>
 
                 <button class="btn btn-primary" onclick="window.openUploadModal()">
                     <span class="desktop-only">Submit</span>
@@ -39,10 +37,10 @@
                 <div id="g_id_onload" data-client_id="980701990716-s643cbvl6gtctgdtgqajgkhct9siko1s.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
                 <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
 
-                <div id="userProfile" style="display:none; align-items:center; gap:8px;">
-                    <img id="userAvatar" src="" alt="User" style="width:32px; height:32px; border-radius:50%; border:2px solid var(--border-color);">
-                    <button class="btn btn-outline" id="adminBtn" style="display:none; padding: 8px 12px;" onclick="window.openAdminPanel()">Admin</button>
-                    <button class="icon-btn" id="signOutBtn" style="font-size: 0.85rem; font-weight: 600;" onclick="window.signOut()">Sign Out</button>
+                <div id="userProfile" style="display:none;">
+                    <img id="userAvatar" src="" alt="User">
+                    <button class="btn btn-outline" id="adminBtn" style="display:none;" onclick="window.openAdminPanel()">Admin</button>
+                    <button class="icon-btn" id="signOutBtn" onclick="window.signOut()">Sign Out</button>
                 </div>
             </div>
         </div>
@@ -81,7 +79,7 @@
         </button>
 
         <div class="filter-group" id="filterGroup">
-           <select class="filter-select" id="filterYear" onchange="window.updateFilters()">
+            <select class="filter-select" id="filterYear" onchange="window.updateFilters()">
                 <option value="all" selected>All Years</option>
                 <option value="FY">First Year (FY)</option>
                 <option value="SY">Second Year (SY)</option>
@@ -131,21 +129,21 @@
 
     <div class="items-grid" id="itemsContainer"></div>
 
-    <div id="notesSection" style="display:none; max-width:1200px; margin:0 auto; padding:0 1.5rem;">
+    <div id="notesSection" style="display:none;">
         <div class="notes-grid" id="notesContainer"></div>
     </div>
 
-    <div id="leaderboardSection" style="display:none; max-width:700px; margin:0 auto; padding:0 1.5rem 4rem;">
+    <div id="leaderboardSection" style="display:none;">
         <div class="leaderboard-card" id="leaderboardContainer"></div>
     </div>
 
-    <div id="savedSection" style="display:none; max-width:1200px; margin:0 auto; padding:0 1.5rem 4rem;">
-        <div class="items-grid" id="savedContainer" style="padding:0; margin:0;"></div>
+    <div id="savedSection" style="display:none;">
+        <div class="items-grid" id="savedContainer"></div>
     </div>
 
     <footer>
         <div class="footer-thanks">Maintained by the Student Community</div>
-        <div class="footer-credit">Developed by Aman | Electrical Engineering</div>
+        <div class="footer-credit">Developed by Aman | FY Electrical Engineering</div>
     </footer>
 
     <div class="modal-overlay" id="pdfPreviewModal">
@@ -176,11 +174,11 @@
 
                 <div id="anonymousNameField" style="display:none;">
                     <label class="form-label">Your Name *</label>
-                    <input type="text" class="form-input" id="uploadUploaderName" placeholder="e.g., Aman" style="margin-bottom:1.2rem;">
+                    <input type="text" class="form-input" id="uploadUploaderName" placeholder="e.g., Aman">
                 </div>
 
                 <label class="form-label">Document Category *</label>
-                <select class="form-select" id="uploadDocType" onchange="window.toggleDocTypeFields()" style="margin-bottom:1.2rem;">
+                <select class="form-select" id="uploadDocType" onchange="window.toggleDocTypeFields()">
                     <option value="paper">Examination Paper</option>
                     <option value="notes">Class Notes</option>
                     <option value="syllabus">Syllabus</option>
@@ -191,14 +189,14 @@
                 <datalist id="subjectList"></datalist>
 
                 <label class="form-label" id="academicLabel">Academic Year &amp; Semester</label>
-                <div id="academicGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1.2rem;">
-                    <select class="form-select" id="uploadYear" onchange="window.toggleUploadBranch()" style="margin-bottom:0;">
+                <div id="academicGrid">
+                    <select class="form-select" id="uploadYear" onchange="window.toggleUploadBranch()">
                         <option value="FY">First Year (FY)</option>
                         <option value="SY">Second Year (SY)</option>
                         <option value="TY">Third Year (TY)</option>
                         <option value="BTech">Final Year (BTech)</option>
                     </select>
-                    <select class="form-select" id="uploadSem" style="margin-bottom:0;">
+                    <select class="form-select" id="uploadSem">
                         <option value="Sem1">Semester 1</option>
                         <option value="Sem2">Semester 2</option>
                         <option value="Sem3">Semester 3</option>
@@ -212,7 +210,7 @@
 
                 <div id="uploadBranchContainer" style="display:none;">
                     <label class="form-label">Branch *</label>
-                    <select class="form-select" id="uploadBranch" style="margin-bottom:1.2rem;">
+                    <select class="form-select" id="uploadBranch">
                         <option value="Civil">Civil</option>
                         <option value="Comp">Computer</option>
                         <option value="Elec">Electrical</option>
@@ -228,7 +226,7 @@
 
                 <div id="examSpecificFields">
                     <label class="form-label">Examination Type</label>
-                    <select class="form-select" id="uploadExamType" style="margin-bottom:1.2rem;">
+                    <select class="form-select" id="uploadExamType">
                         <option value="MSE">Mid Semester (MSE)</option>
                         <option value="ESE">End Semester (ESE)</option>
                     </select>
@@ -239,13 +237,13 @@
 
                 <div id="notesSpecificFields" style="display:none;">
                     <label class="form-label">Module / Topic (Optional)</label>
-                    <input type="text" class="form-input" id="uploadNoteTopic" placeholder="e.g., Module 1: Quantum Mechanics" style="margin-bottom:1.2rem;">
+                    <input type="text" class="form-input" id="uploadNoteTopic" placeholder="e.g., Module 1: Quantum Mechanics">
 
                     <label class="form-label">Author / Professor (Optional)</label>
-                    <input type="text" class="form-input" id="uploadNoteAuthor" placeholder="e.g., Prof. Sharma" style="margin-bottom:1.2rem;">
+                    <input type="text" class="form-input" id="uploadNoteAuthor" placeholder="e.g., Prof. Sharma">
                 </div>
 
-                <div id="duplicateWarning" style="display:none; background:#fee2e2; color:#991b1b; border-radius:10px; padding:10px 14px; font-size:0.88rem; font-weight:600; margin-bottom:1rem; border-left:3px solid #ef4444;">
+                <div id="duplicateWarning" style="display:none;">
                     ⚠️ A document with these details already exists in the archive. Please verify before submitting.
                 </div>
 
@@ -262,10 +260,10 @@
                     <div id="fileStatus" class="file-status"></div>
                 </div>
 
-                <div id="uploadProgressWrap" style="display:none; margin-top:1rem;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                        <span style="font-size:0.85rem; font-weight:600; color:var(--text);">Uploading…</span>
-                        <span id="uploadProgressPct" style="font-size:0.85rem; color:var(--text-muted);">0%</span>
+                <div id="uploadProgressWrap" style="display:none;">
+                    <div class="upload-progress-header">
+                        <span class="upload-progress-label">Uploading…</span>
+                        <span id="uploadProgressPct">0%</span>
                     </div>
                     <div class="upload-progress-bar-bg">
                         <div class="upload-progress-bar-fill" id="uploadProgressFill"></div>
@@ -300,14 +298,14 @@
             <div class="modal-body">
                 <p class="modal-desc" id="reportSubjectLabel">Document referenced: <strong id="reportPaperName">—</strong></p>
                 <label class="form-label">Select Issue Type</label>
-                <select class="form-select" id="reportType" style="margin-bottom:1rem;">
+                <select class="form-select" id="reportType">
                     <option value="broken">Link is broken or expired</option>
                     <option value="wrong">Incorrect document uploaded</option>
                     <option value="corrupt">File is corrupted or unreadable</option>
                     <option value="other">Other</option>
                 </select>
                 <label class="form-label">Additional Comments (Optional)</label>
-                <textarea class="form-input" id="reportDetails" rows="3" placeholder="Provide further details..." style="resize:vertical;"></textarea>
+                <textarea class="form-input" id="reportDetails" rows="3" placeholder="Provide further details..."></textarea>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" onclick="window.submitReport()">Submit Report</button>
