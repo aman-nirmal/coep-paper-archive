@@ -87,7 +87,21 @@ header { background: var(--surface); border-bottom: var(--border); position: sti
 .filter-group { background: var(--surface); padding: 15px; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid var(--border-color); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; width: 100%; }
 .filter-select, .search-box { width: 100%; padding: 14px 16px; border: var(--border); border-radius: var(--radius); background: var(--input-bg); font-weight: 600; color: var(--text); outline: none; font-size: 0.95rem; height: 50px; box-shadow: inset 2px 2px 0px rgba(0,0,0,0.05); transition: background-color 0.2s; }
 .filter-select:focus, .search-box:focus { background: var(--primary-bg); border-color: var(--primary); }
-.search-box { grid-column: span 2; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23292524' stroke-width='3' stroke-linecap='square' stroke-linejoin='miter'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 16px center; padding-left: 46px; }
+.search-box { 
+    grid-column: 1 / -1; 
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23292524' stroke-width='3' stroke-linecap='square' stroke-linejoin='miter'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E"); 
+    background-repeat: no-repeat; 
+    background-position: 16px center; 
+    padding-left: 46px; 
+}
+@media (min-width: 1024px) {
+    .filter-group {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    .search-box {
+        grid-column: 2 / -1;
+    }
+}
 .items-grid { max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; justify-content: center; flex: 1; align-content: start; }
 .card { background: var(--card-bg); border: var(--border); border-radius: var(--radius); transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; display: flex; flex-direction: column; box-shadow: var(--shadow); }
 .card:hover { transform: translate(-3px, -3px); box-shadow: 8px 8px 0px var(--border-color); }
