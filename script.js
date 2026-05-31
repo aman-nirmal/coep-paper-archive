@@ -204,7 +204,7 @@ function renderCarousel() {
                 <span class="cc-tag ${examClass}" style="color:white;">${escAttr(p.examType)}</span>
                 <span class="cc-tag tag-sem">${escAttr(p.year)} · ${escAttr(p.sem)}</span>
                 ${p.branch && p.branch !== 'Common' ? `<span class="cc-tag tag-sem">${escAttr(p.branch)}</span>` : ''}
-                <span style="font-size:0.76rem;">${escAttr(String(p.examYear))}</span>
+                <span class="cc-tag tag-year-num">${escAttr(String(p.examYear))}</span>
             </div>
         `;
         card.addEventListener('click', () => {
