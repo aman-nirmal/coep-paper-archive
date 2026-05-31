@@ -66,7 +66,7 @@ async function fetchLivePapers() {
     if (cachedData && cachedData.length > 0) {
         processAndRenderData(cachedData);
     } else {
-        showLoadingSkeletons(); 
+        showLoadingSkeletons();
     }
     try {
         const response = await fetch(WEB_APP_URL);
@@ -74,7 +74,6 @@ async function fetchLivePapers() {
         const liveData = await response.json();
         lsSet('coep_live_papers_cache', liveData);
         processAndRenderData(liveData);
-        
     } catch (error) {
         console.error("Background fetch failed:", error);
         if (!cachedData) {
@@ -100,14 +99,11 @@ function processAndRenderData(dataArray) {
         noteTopic: item.NoteTopic || '',
         noteAuthor: item.NoteAuthor || ''
     })).reverse();
-
     allPapers = [...getApproved(), ...communityPapers];
-
     updateSubjectDatalist();
     window.updateFilters();
     updateStats();
     renderCarousel();
-
     window.switchTab(currentTab);
 }
 
@@ -416,7 +412,7 @@ window.toggleDocTypeFields = () => {
         if (semSelect) semSelect.style.display = 'none';
         if (academicGrid) academicGrid.style.gridTemplateColumns = '1fr';
         if (academicLabel) academicLabel.textContent = 'Academic Year';
-        if (subjectLabel) subjectLabel.textContent = 'Syllabus Title';
+        if (subjectLabel) subjectLabel.textContent = 'Syllabus Title *';
         if (subjectInput) {
             subjectInput.removeAttribute('list');
             subjectInput.placeholder = 'e.g., Complete Computer Engineering Syllabus 2024';
@@ -425,7 +421,7 @@ window.toggleDocTypeFields = () => {
         if (semSelect) semSelect.style.display = 'block';
         if (academicGrid) academicGrid.style.gridTemplateColumns = '1fr 1fr';
         if (academicLabel) academicLabel.innerHTML = 'Academic Year &amp; Semester';
-        if (subjectLabel) subjectLabel.textContent = 'Subject Title';
+        if (subjectLabel) subjectLabel.textContent = 'Subject Title *';
         if (subjectInput) {
             subjectInput.setAttribute('list', 'subjectList');
             subjectInput.placeholder = 'e.g., Engineering Physics (EP)';
@@ -490,7 +486,7 @@ function resetUploadForm() {
     const status = document.getElementById('fileStatus');
     if (status) { status.textContent = ''; status.className = 'file-status'; }
     const dz = document.getElementById('dropzone');
-    if (dz) dz.querySelector('.dropzone-text').textContent = 'Tap to browse or drag PDF here';
+    if (dz) dz.querySelector('.dropzone-text').textContent = 'Drag and drop a PDF file, or click to browse';
     const dupWarn = document.getElementById('duplicateWarning');
     if (dupWarn) dupWarn.style.display = 'none';
     const progressWrap = document.getElementById('uploadProgressWrap');
@@ -831,14 +827,15 @@ function renderNotes() {
         const typeLabel = n.docType === 'notes' ? 'Notes' : 'Syllabus';
         const titleText = `${escAttr(n.subject)}${n.noteTopic ? ` - ${escAttr(n.noteTopic)}` : ''}`;
         const authorText = n.noteAuthor ? ` (${escAttr(n.noteAuthor)})` : '';
+        const semText = n.sem === '---' ? '' : ` · ${escAttr(n.sem)}`;
         return `
         <div class="note-card">
             <div class="note-card-type note-type-${escAttr(n.docType)}">${typeLabel}</div>
             <div class="note-card-title">${titleText}</div>
             <div class="note-card-meta">Date: ${new Date(n.date).toLocaleDateString('en-IN')} &nbsp;|&nbsp; Source: ${escAttr(n.creatorName)}${authorText}</div>
-            <div style="display:flex; gap:12px; margin-top:auto;">
-                <button onclick="window.openPdfPreview('${escAttr(n.subject.replace(/'/g, "\\'"))}', '${escAttr(n.link)}')" class="btn btn-outline" style="flex:1;">Preview</button>
-                <a href="${escAttr(n.link)}" target="_blank" class="btn btn-primary" style="flex:1; text-decoration:none; text-align:center;">Access</a>
+            <div style="display:flex; gap:8px; margin-top:auto;">
+                <button onclick="window.openPdfPreview('${escAttr(n.subject.replace(/'/g, "\\'"))}', '${escAttr(n.link)}')" class="btn btn-outline" style="flex:1; font-size:0.88rem; padding:8px;">Preview</button>
+                <a href="${escAttr(n.link)}" target="_blank" class="btn btn-primary" style="flex:1; text-decoration:none; font-size:0.88rem; padding:8px; text-align:center;">Access</a>
             </div>
         </div>
     `}).join('');
@@ -893,6 +890,7 @@ function buildCard(p) {
         bmBtn.dataset.id = p.id;
         bmBtn.title = bookmarked ? 'Remove from saved' : 'Save document';
         bmBtn.textContent = bmIcon;
+        bmBtn.style.cssText = 'font-size: 1.1rem; padding: 4px 8px;';
         bmBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             window.toggleBookmark(p.id);
@@ -901,6 +899,7 @@ function buildCard(p) {
         reportBtn.className = 'card-icon-btn';
         reportBtn.title = 'Report discrepancy';
         reportBtn.textContent = 'Report';
+        reportBtn.style.cssText = 'font-size: 0.85rem; font-weight:600;';
         reportBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             window.openReportModal({ id: p.id, subject: p.subject, link: p.link });
@@ -938,33 +937,27 @@ window.switchTab = (tab) => {
         const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
         if (btn) btn.classList.toggle('active', t === tab);
     });
-
     document.getElementById('itemsContainer').style.display = tab === 'papers' ? 'grid' : 'none';
-    
-    const filterControls = document.getElementById('filterControls');
-    if (filterControls) {
-        filterControls.style.display = (tab === 'papers' || tab === 'notes') ? 'block' : 'none';
+    const filterGroupEl = document.getElementById('filterGroup');
+    if (filterGroupEl) {
+        const filterBarEl = filterGroupEl.closest('.filter-bar');
+        if (filterBarEl) filterBarEl.style.display = tab === 'papers' ? '' : 'block';
     }
-
     document.getElementById('notesSection').style.display = tab === 'notes' ? 'block' : 'none';
     document.getElementById('leaderboardSection').style.display = tab === 'leaderboard' ? 'block' : 'none';
     document.getElementById('savedSection').style.display = tab === 'saved' ? 'block' : 'none';
-
     const loadBtn = document.getElementById('loadMoreBtn');
     if (loadBtn) {
-        loadBtn.style.display = tab === 'papers' ? 'block' : 'none';
+        loadBtn.style.display = tab === 'papers' ? '' : 'none';
     }
-
-    if (tab !== 'papers' && tab !== 'notes') {
+    if (tab !== 'papers') {
         const g = document.getElementById('filterGroup');
         const arrow = document.getElementById('filterArrow');
-        if (g) { 
-            g.classList.remove('show'); 
-            g.style.display = ''; // Clears inline style so CSS takes over
-        }
+        if (g) { g.classList.remove('show'); g.style.display = 'none'; }
         if (arrow) arrow.style.transform = 'rotate(0deg)';
     }
-
+    const filterBar = document.querySelector('.filter-bar');
+    if (filterBar) filterBar.style.marginTop = tab === 'papers' ? '' : '1rem';
     if (tab === 'notes') renderNotes();
     if (tab === 'leaderboard') renderLeaderboard();
     if (tab === 'saved') renderSavedSection();
