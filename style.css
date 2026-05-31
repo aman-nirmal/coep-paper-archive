@@ -237,14 +237,14 @@ body.dark select.filter-select, body.dark select.form-select { background-image:
     .pdf-iframe-wrap { height: 60vh; padding: 0 1.5rem 1.5rem; }
     #academicGrid { grid-template-columns: 1fr; gap: 0; }
     #academicGrid select { margin-bottom: 1.5rem; }
-    .leaderboard-header { padding: 1.5rem 1rem; }
-    .leaderboard-header h2 { font-size: 1.4rem; letter-spacing: 0; }
-    .leaderboard-list { padding: 1rem; }
-    .leaderboard-row { gap: 8px; padding: 12px 10px; }
-    .lb-rank { width: 28px; font-size: 1.1rem; padding-right: 8px; }
-    .lb-name { font-size: 0.95rem; }
-    .lb-badge { padding: 4px 6px; font-size: 0.7rem; letter-spacing: 0; }
-    .lb-count { padding: 4px 6px; font-size: 0.8rem; white-space: nowrap; }
+    .leaderboard-header { padding: 1.2rem 1rem; }
+    .leaderboard-header h2 { font-size: 1.3rem; letter-spacing: 0; }
+    .leaderboard-list { padding: 0.75rem; }
+    .leaderboard-row { gap: 6px; padding: 12px 8px; }
+    .lb-rank { width: 24px; font-size: 1rem; padding-right: 4px; }
+    .lb-name { font-size: 0.9rem; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lb-badge { padding: 3px 6px; font-size: 0.65rem; letter-spacing: 0; }
+    .lb-count { padding: 3px 6px; font-size: 0.75rem; white-space: nowrap; flex-shrink: 0; }
 }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
