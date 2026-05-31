@@ -203,7 +203,6 @@ function renderCarousel() {
             <div class="cc-meta">
                 <span class="cc-tag ${examClass}" style="color:white;">${escAttr(p.examType)}</span>
                 <span class="cc-tag tag-sem">${escAttr(p.year)} · ${escAttr(p.sem)}</span>
-                ${p.branch && p.branch !== 'Common' ? `<span class="cc-tag tag-sem">${escAttr(p.branch)}</span>` : ''}
                 <span class="cc-tag tag-year-num">${escAttr(String(p.examYear))}</span>
             </div>
         `;
