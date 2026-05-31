@@ -62,49 +62,37 @@ function escAttr(str) {
 }
 
 async function fetchLivePapers() {
-    const cachedData = lsGet('coep_live_papers_cache', null);
-    if (cachedData && cachedData.length > 0) {
-        processAndRenderData(cachedData);
-    } else {
-        showLoadingSkeletons();
-    }
+    showLoadingSkeletons();
     try {
         const response = await fetch(WEB_APP_URL);
         if (!response.ok) throw new Error('Network response was not ok');
         const liveData = await response.json();
-        lsSet('coep_live_papers_cache', liveData);
-        processAndRenderData(liveData);
+        const communityPapers = liveData.map(item => ({
+            id: generateStableId(item),
+            subject: item.Subject,
+            year: item.Year,
+            sem: item.Semester,
+            examType: item.ExamType,
+            examYear: item.ExamYear,
+            creatorName: item.Name,
+            creatorEmail: item.CreatorEmail,
+            link: item.FileLink,
+            date: item.Timestamp,
+            branch: item.Branch || (item.Year === 'FY' ? 'Common' : 'Common'),
+            docType: item.DocType || 'paper',
+            noteTopic: item.NoteTopic || '',
+            noteAuthor: item.NoteAuthor || ''
+        })).reverse();
+        allPapers = [...getApproved(), ...communityPapers];
+        updateSubjectDatalist();
+        window.updateFilters();
+        updateStats();
+        renderCarousel();
+        window.switchTab(currentTab);
     } catch (error) {
-        console.error("Background fetch failed:", error);
-        if (!cachedData) {
-            showFetchError();
-        }
+        console.error(error);
+        showFetchError();
     }
-}
-
-function processAndRenderData(dataArray) {
-    const communityPapers = dataArray.map(item => ({
-        id: generateStableId(item),
-        subject: item.Subject,
-        year: item.Year,
-        sem: item.Semester,
-        examType: item.ExamType,
-        examYear: item.ExamYear,
-        creatorName: item.Name,
-        creatorEmail: item.CreatorEmail,
-        link: item.FileLink,
-        date: item.Timestamp,
-        branch: item.Branch || (item.Year === 'FY' ? 'Common' : 'Common'),
-        docType: item.DocType || 'paper',
-        noteTopic: item.NoteTopic || '',
-        noteAuthor: item.NoteAuthor || ''
-    })).reverse();
-    allPapers = [...getApproved(), ...communityPapers];
-    updateSubjectDatalist();
-    window.updateFilters();
-    updateStats();
-    renderCarousel();
-    window.switchTab(currentTab);
 }
 
 fetchLivePapers();
