@@ -1037,11 +1037,11 @@ window.updateFilters = () => {
     branchContainer.style.display = year === 'FY' ? 'none' : 'block';
     semSelect.innerHTML = '<option value="all">All Semesters</option>';
     let sems = [];
-    if (year === 'all') sems = ['Sem1', 'Sem2', 'Sem3', 'Sem4', 'Sem5', 'Sem6', 'Sem7', 'Sem8'];
-    else if (year === 'FY') sems = ['Sem1', 'Sem2'];
-    else if (year === 'SY') sems = ['Sem3', 'Sem4'];
-    else if (year === 'TY') sems = ['Sem5', 'Sem6'];
-    else if (year === 'BTech') sems = ['Sem7', 'Sem8'];
+    if (year === 'all') sems = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6', 'Sem 7', 'Sem 8'];
+    else if (year === 'FY') sems = ['Sem 1', 'Sem 2'];
+    else if (year === 'SY') sems = ['Sem 3', 'Sem 4'];
+    else if (year === 'TY') sems = ['Sem 5', 'Sem 6'];
+    else if (year === 'BTech') sems = ['Sem 7', 'Sem 8'];
     sems.forEach(s => semSelect.add(new Option(s.replace('Sem', 'Semester '), s)));
     window.updateSubjectDropdown();
 };
