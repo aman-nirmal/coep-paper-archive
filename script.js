@@ -1,5 +1,16 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk8dwV-Q9kdFRXGiUf3CBvnhhTh8_Y1rmDf9ve41JawKoNmC17s-7pZ4oAPnGe7mgI/exec";
-let currentUser = null;
+let currentUser = lsGet('coep_user', null);
+document.addEventListener('DOMContentLoaded', () => {
+    if (currentUser) {
+        document.querySelector('.g_id_signin').style.display = 'none';
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('userAvatar').src = currentUser.picture;
+        if (ADMIN_EMAILS.includes(currentUser.email)) {
+            document.getElementById('adminBtn').style.display = 'block';
+        }
+        syncBookmarksFromServer();
+    }
+});
 const ADMIN_EMAILS = ['coep.paper.archive@gmail.com'];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
@@ -17,6 +28,7 @@ window.handleCredentialResponse = async (response) => {
         picture: payload.picture,
         token: response.credential
     };
+    lsSet('coep_user', currentUser);
     document.querySelector('.g_id_signin').style.display = 'none';
     document.getElementById('userProfile').style.display = 'flex';
     document.getElementById('userAvatar').src = currentUser.picture;
@@ -29,6 +41,8 @@ window.handleCredentialResponse = async (response) => {
 
 window.signOut = () => {
     currentUser = null;
+    lsSet('coep_user', null);
+    document.getElementById('userProfile').style.display = 'none';
     document.getElementById('userProfile').style.display = 'none';
     document.getElementById('adminBtn').style.display = 'none';
     document.querySelector('.g_id_signin').style.display = 'block';
