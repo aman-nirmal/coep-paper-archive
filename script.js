@@ -800,7 +800,7 @@ function renderNotes() {
         if (year !== 'all' && p.year !== year) return false;
         if (sem !== 'all' && p.sem !== sem && p.sem !== '---') return false;
         if (branch !== 'all') {
-            if (p.year !== 'FY' && !p.branch.includes(branch)) return false;
+            if (p.year !== 'FY' && !p.branch.includes(branch) && !p.branch.includes('Common')) return false;
         }
         if (search && !p.subject.toLowerCase().includes(search)) return false;
         return true;
@@ -973,7 +973,7 @@ window.renderPapers = (resetPage = true) => {
         if (sem !== 'all' && p.sem !== sem) return false;
         if (exam !== 'all' && p.examType !== exam) return false;
         if (branch !== 'all') {
-            if (p.year !== 'FY' && !p.branch.includes(branch)) return false;
+            if (p.year !== 'FY' && !p.branch.includes(branch) && !p.branch.includes('Common')) return false;
         }
         if (subject !== 'all' && p.subject !== subject) return false;
         if (search && !p.subject.toLowerCase().includes(search)) return false;
@@ -1056,7 +1056,7 @@ window.updateSubjectDropdown = () => {
         if (p.docType === 'paper') {
             const yearMatch = year === 'all' || p.year === year;
             const semMatch = sem === 'all' || p.sem === sem;
-            const branchMatch = branch === 'all' || p.branch.includes(branch) || p.year === 'FY';
+            const branchMatch = branch === 'all' || p.branch.includes(branch) || p.year === 'FY' || p.branch.includes('Common');
             if (yearMatch && semMatch && branchMatch) {
                 subjects.add(p.subject);
             }
