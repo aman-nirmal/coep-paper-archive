@@ -776,7 +776,8 @@ function renderLeaderboard() {
     const badges = ['Scholar', 'Contributor', 'Participant', 'Member'];
     let rows = sorted.map(([name, count], i) => {
         const rank = i < 3 ? `<span class="lb-rank ${rankClasses[i]}">#${i + 1}</span>` : `<span class="lb-rank">#${i + 1}</span>`;
-        const badge = i < 4 ? `<span class="lb-badge">${badges[i]}</span>` : '';
+        const badgeText = badges[i] || 'Member';
+        const badge = `<span class="lb-badge">${badgeText}</span>`;
         return `<div class="leaderboard-row">${rank}<span class="lb-name">${escAttr(name)}</span>${badge}<span class="lb-count">${count} document${count !== 1 ? 's' : ''}</span></div>`;
     }).join('');
     container.innerHTML = `
